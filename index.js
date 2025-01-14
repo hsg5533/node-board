@@ -109,7 +109,7 @@ app.get("/read/:bnum", function (req, res) {
 });
 
 // 게시글 수정
-app.post("/update/:bnum", function (req, res) {
+app.put("/update/:bnum", function (req, res) {
   const body = req.body;
   const sql =
     "update board set id=?, title=?, content=? where bnum=" + req.params.bnum;
