@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node.js REST API 테스트</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f9;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      section {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        margin-top: 0;
+        color: #555;
+      }
+      input,
+      textarea,
+      button {
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      textarea {
+        resize: none;
+      }
+      button {
+        width: auto;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      pre {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        overflow: auto;
+      }
+    </style>
+    <script>
+      async function fetchPosts() {
+        const response = await fetch("http://localhost:3000/view");
+        const data = await response.json();
+        document.getElementById("results").innerText = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+
+      async function viewPost() {
+        const bnum = document.getElementById("view-bnum").value;
+        const response = await fetch(`http://localhost:3000/read/${bnum}`);
+        const data = await response.json();
+        document.getElementById("results").innerText = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+
+      async function createPost() {
+        const id = document.getElementById("post-id").value;
+        const title = document.getElementById("post-title").value;
+        const content = document.getElementById("post-content").value;
+        const response = await fetch("http://localhost:3000/insert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, title, content }),
+        });
+        document.getElementById("results").innerText = await response.text();
+      }
+
+      async function updatePost() {
+        const bnum = document.getElementById("update-bnum").value;
+        const id = document.getElementById("update-id").value;
+        const title = document.getElementById("update-title").value;
+        const content = document.getElementById("update-content").value;
+        const response = await fetch(`http://localhost:3000/update/${bnum}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, title, content }),
+        });
+        document.getElementById("results").innerText = await response.text();
+      }
+
+      async function deletePost() {
+        const bnum = document.getElementById("delete-bnum").value;
+        const response = await fetch(`http://localhost:3000/delete/${bnum}`, {
+          method: "DELETE",
+        });
+        document.getElementById("results").innerText = await response.text();
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Node.js REST API 테스트</h1>
+    <section>
+      <h2>게시글 목록 조회</h2>
+      <button onclick="fetchPosts()">조회</button>
+    </section>
+
+    <section>
+      <h2>게시글 조회</h2>
+      <input type="text" id="view-bnum" placeholder="게시글 번호" />
+      <button onclick="viewPost()">조회</button>
+    </section>
+
+    <section>
+      <h2>게시글 추가</h2>
+      <input type="text" id="post-id" placeholder="작성자 ID" />
+      <input type="text" id="post-title" placeholder="제목" />
+      <textarea id="post-content" placeholder="내용"></textarea>
+      <button onclick="createPost()">추가</button>
+    </section>
+
+    <section>
+      <h2>게시글 수정</h2>
+      <input type="text" id="update-bnum" placeholder="게시글 번호" />
+      <input type="text" id="update-id" placeholder="작성자 ID" />
+      <input type="text" id="update-title" placeholder="제목" />
+      <textarea id="update-content" placeholder="내용"></textarea>
+      <button onclick="updatePost()">수정</button>
+    </section>
+
+    <section>
+      <h2>게시글 삭제</h2>
+      <input type="text" id="delete-bnum" placeholder="게시글 번호" />
+      <button onclick="deletePost()">삭제</button>
+    </section>
+
+    <section>
+      <h2>결과</h2>
+      <pre id="results"></pre>
+    </section>
+  </body>
+</html>

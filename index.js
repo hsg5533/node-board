@@ -2,9 +2,10 @@ const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
 const fs = require("fs");
+const path = require("path");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
-const whitelist = ["http://localhost"]; // 접속 허용 주소
+const whitelist = ["http://localhost:3000"]; // 접속 허용 주소
 const app = express();
 const conn = mysql.createConnection({
   host: "localhost",
@@ -52,6 +53,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set("port", process.env.PORT || 3000); // 포트 설정
 app.set("host", process.env.HOST || "0.0.0.0"); // 아이피 설정
+
+// 루트 경로에서 index.html 반환
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // 게시글 목록 보기
 app.get("/view", function (req, res) {
